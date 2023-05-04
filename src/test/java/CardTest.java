@@ -17,7 +17,7 @@ public class CardTest {
         $("[data-test-id = city] input").setValue("Москва");
 
         Calendar date = Calendar.getInstance();
-        date.add(Calendar.DATE, 6);
+        date.add(Calendar.DATE, 19);
         String formattedDate = new SimpleDateFormat("dd.MM.yyyy").format(date.getTime());
         $("[data-test-id = date] input").doubleClick().sendKeys(" ");
         $("[data-test-id = date] input").setValue(formattedDate);
