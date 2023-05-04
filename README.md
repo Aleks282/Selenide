@@ -1,3 +1,4 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/gyhckgwd9hm584x3?svg=true)](https://ci.appveyor.com/project/Aleks282/selenide-tmcwt)
 
 
 # Домашнее задание к занятию «2.2. Selenide»
