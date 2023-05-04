@@ -1,39 +1,34 @@
-import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.Configuration;
-import com.codeborne.selenide.conditions.Visible;
+package ru.netology.web;
+
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.Keys;
 
 import java.time.Duration;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Selectors.*;
 import static com.codeborne.selenide.Selenide.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CardTest {
-    public String generateDate(int days) {
-        return LocalDate.now().plusDays(days).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    @Test
+    void shouldRegisterByAccountNumberDOMModification() {
+        open("http://localhost:9999");
+        $$(".tab-item").find(exactText("По номеру счёта")).click();
+        $("[name='number']").setValue("4055 0100 0123 4613 8564");
+        $("[name='phone']").setValue("+792000000000");
+        $$("button").find(exactText("Продолжить")).click();
+        $(withText("Успешная авторизация")).shouldBe(visible, Duration.ofMillis(5000));
+        $(byText("Личный кабинет")).shouldBe(visible, Duration.ofMillis(5000));
     }
-    String planningDate = generateDate(3);
 
     @Test
-    void testDelivery() {
-        Configuration.holdBrowserOpen = true;
-        open("http://localhost:9999/");
-        $("input[placeholder=\"Город\"]").setValue("Москва");
-        $("[data-test-id='date'] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
-        $("[placeholder=\"Дата встречи\"]").setValue(planningDate);
-        $("[name=\"name\"]").setValue("Салтыков-Щедрин Михаил");
-        $("[name=\"phone\"]").setValue("+7950333333");
-        $("[data-test-id=\"agreement\"]").click();
-        $x("//span[text()=\"Забронировать\"]").click();
-        $("[data-test-id=\"notification\"]").should(visible, Duration.ofSeconds(15));
-        $(".notification__content")
-                .shouldHave(Condition.text("Встреча успешно забронирована на " + planningDate), Duration.ofSeconds(15))
-                .shouldBe(Condition.visible);
-
-
+    void shouldRegisterByAccountNumberVisibilityChange() {
+        open("http://localhost:9999");
+        $$(".tab-item").find(exactText("По номеру счёта")).click();
+        $$("[name='number']").last().setValue("4055 0100 0123 4613 8564");
+        $$("[name='phone']").last().setValue("+792000000000");
+        $$("button").find(exactText("Продолжить")).click();
+        $(withText("Успешная авторизация")).shouldBe(visible, Duration.ofSeconds(5));
+        $(byText("Личный кабинет")).shouldBe(visible, Duration.ofSeconds(5));
     }
 }
+
