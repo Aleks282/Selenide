@@ -1,6 +1,5 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/gyhckgwd9hm584x3?svg=true)](https://ci.appveyor.com/project/Aleks282/selenide-tmcwt)
 
-
 # Домашнее задание к занятию «2.2. Selenide»
 
 В качестве результата пришлите ссылку на ваш GitHub-проект в личном кабинете студента на сайте [netology.ru](https://netology.ru).
