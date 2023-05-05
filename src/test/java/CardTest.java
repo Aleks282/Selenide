@@ -1,34 +1,39 @@
-package ru.netology.web;
-
+import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.conditions.Visible;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Keys;
 
-import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
-import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CardTest {
+class CardTest {
+    public String generateDate(int days) {
+        return LocalDate.now().plusDays(days).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    }
+    String planningDate = generateDate(3);
+
     @Test
-    public void shouldSentForm() {
+    void testDelivery() {
+        Configuration.holdBrowserOpen = true;
         open("http://localhost:9999/");
-        $("[data-test-id = city] input").setValue("Москва");
+        $("input[placeholder=\"Город\"]").setValue("Москва");
+        $("[data-test-id='date'] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
+        $("[placeholder=\"Дата встречи\"]").setValue(planningDate);
+        $("[name=\"name\"]").setValue("Салтыков-Щедрин Михаил");
+        $("[name=\"phone\"]").setValue("+79509999999");
+        $("[data-test-id=\"agreement\"]").click();
+        $x("//span[text()=\"Забронировать\"]").click();
+        $("[data-test-id=\"notification\"]").should(visible, Duration.ofSeconds(15));
+        $(".notification__content")
+                .shouldHave(Condition.text("Встреча успешно забронирована на " + planningDate), Duration.ofSeconds(15))
+                .shouldBe(Condition.visible);
 
-        Calendar date = Calendar.getInstance();
-        date.add(Calendar.DATE, 19);
-        String formattedDate = new SimpleDateFormat("dd.MM.yyyy").format(date.getTime());
-        $("[data-test-id = date] input").doubleClick().sendKeys(" ");
-        $("[data-test-id = date] input").setValue(formattedDate);
-
-        $("[data-test-id = name] input").setValue("Иванов Иван");
-        $("[data-test-id = phone] input").setValue("+79508215070");
-        $("[data-test-id = agreement]").click();
-        $$("form button").last().click();
-
-        String expected = "Встреча успешно забронирована на " + formattedDate;
-        $("[data-test-id = notification]").shouldBe(visible, Duration.ofSeconds(15)).shouldHave(text(expected));
 
     }
 }
